@@ -1,23 +1,8 @@
-from rest_framework import viewsets, filters
-from django_filters.rest_framework import DjangoFilterBackend
-
+from rest_framework import generics
 from .models import Course
 from .serializers import CourseSerializer
 
 
-class CourseViewSet(viewsets.ModelViewSet):
-
+class CourseListCreateView(generics.ListCreateAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-
-    filter_backends = [
-        DjangoFilterBackend,
-        filters.SearchFilter,
-        filters.OrderingFilter
-    ]
-
-    filterset_fields = ['platform', 'rating']
-
-    search_fields = ['title', 'description']
-
-    ordering_fields = ['rating', 'title']

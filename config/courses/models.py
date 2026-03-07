@@ -16,6 +16,7 @@ class Course(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     rating = models.FloatField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+    image = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return self.title
