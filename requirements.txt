@@ -1,5 +1,4 @@
-﻿asgiref==3.11.1
-Django==4.2.7
+﻿Django==4.2.7
 django-filter==23.5
 gunicorn
 djangorestframework==3.16.1
@@ -9,3 +8,14 @@ sqlparse==0.5.5
 tzdata==2025.3
 django-cors-headers
 django-prometheus
+asgiref==3.11.1
+Django==5.2.13
+django-filter==25.2
+gunicorn
+djangorestframework==3.16.1
+djangorestframework_simplejwt==5.5.1
+PyJWT==2.11.0
+sqlparse==0.5.5
+tzdata==2025.3
+django-cors-headers
+django-prometheus==2.3.1
