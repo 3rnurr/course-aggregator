@@ -11,3 +11,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Fix for course card favorite button */
+.course-card {
+  position: relative !important;
+}
+
+.course-card button[title*="избранное"] {
+  pointer-events: auto !important;
+  z-index: 1000 !important;
+}

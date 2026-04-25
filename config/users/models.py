@@ -9,6 +9,7 @@ class User(AbstractUser):
     )
 
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
+    favorites = models.ManyToManyField('courses.Course', blank=True, related_name='favorited_by')
 
     def __str__(self):
         return self.username
