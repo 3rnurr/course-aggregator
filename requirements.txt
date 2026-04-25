@@ -9,7 +9,6 @@ tzdata==2025.3
 django-cors-headers
 django-prometheus
 asgiref==3.11.1
-Django==5.2.13
 django-filter==25.2
 gunicorn
 djangorestframework==3.16.1
