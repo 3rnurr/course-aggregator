@@ -6,4 +6,4 @@ COPY . .
 
 RUN pip install -r requirements.txt
 
-CMD ["gunicorn", "config.config.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["sh", "-c", "python config/manage.py migrate && python config/manage.py collectstatic --noinput && gunicorn config.config.wsgi:application --bind 0.0.0.0:8000"]
