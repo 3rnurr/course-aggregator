@@ -18,7 +18,11 @@ WORKDIR /app
 
 COPY . .
 
-RUN pip install -r requirements.txt
+# Install production dependencies
+RUN pip install -r requirements.txt && pip install -r config/requirements-prod.txt
+
+# Copy .env if present
+COPY .env .env
 
 WORKDIR /app/config
 
