@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api";
 import CourseCard from "../components/CourseCard";
-import { useCallback } from "react";
 
 
 function Courses() {
@@ -15,7 +14,7 @@ function Courses() {
   
 
 
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     // Попробуем загрузить с бэка, если нет — используем заглушку
     fetchCourses();
