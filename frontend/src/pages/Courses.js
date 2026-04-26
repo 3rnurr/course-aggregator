@@ -9,10 +9,9 @@ function Courses() {
   const [category, setCategory] = useState("");
   const [rating, setRating] = useState("");
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [ordering, setOrdering] = useState("-created_at");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  
 
 
 
