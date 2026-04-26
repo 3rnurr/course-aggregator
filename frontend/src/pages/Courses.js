@@ -77,13 +77,11 @@ function Courses() {
         isDemo = true;
       }
       setCourses(loaded);
-      setTotalPages(Math.ceil(loaded.length / 12));
       if (isDemo && page > Math.ceil(loaded.length / 12)) {
         setPage(1);
       }
     } catch (err) {
       setCourses(manyCourses);
-      setError("Ошибка при загрузке курсов, показаны демо-курсы");
     } finally {
       setLoading(false);
     }
