@@ -12,7 +12,6 @@ function Courses() {
   const [page, setPage] = useState(1);
   const [ordering, setOrdering] = useState("-created_at");
   const [loading, setLoading] = useState(false);
-  const fetchCourses = async () => {
   
 
 
