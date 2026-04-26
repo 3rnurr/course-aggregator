@@ -14,8 +14,8 @@ function Courses() {
   
 
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     // Попробуем загрузить с бэка, если нет — используем заглушку
     fetchCourses();
   }, [page, ordering,]);
