@@ -12,14 +12,6 @@ function Courses() {
   const [ordering, setOrdering] = useState("-created_at");
   const [loading, setLoading] = useState(false);
   
-
-
-  useEffect(() => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    // Попробуем загрузить с бэка, если нет — используем заглушку
-    fetchCourses();
-  }, [fetchCourses]);
-
   const manyCourses = [
     { id: 1, title: "Django Course", description: "Изучите Django с нуля", rating: 4.7, url: "https://www.djangoproject.com/", category: "Python" },
     { id: 2, title: "Python для начинающих", description: "Базовый курс по Python", rating: 4.5, url: "https://stepik.org/course/67", category: "Python" },
@@ -55,43 +47,51 @@ function Courses() {
   ];
 
   const fetchCourses = useCallback(async () => {
-    setLoading(true);
+  setLoading(true);
+  try {
+    const params = new URLSearchParams({
+      page: page,
+      page_size: 12,
+      ordering: ordering,
+      search: search
+    });
+
+    let loaded;
+    let isDemo = false;
+
     try {
-      const params = new URLSearchParams({
-        page: page,
-        page_size: 12,
-        ordering: ordering,
-        search: search
-      });
-      let loaded;
-      let isDemo = false;
-      try {
-        const res = await api.get(`courses/?${params}`);
-        loaded = res.data.results || res.data;
-        if (!loaded || loaded.length < 10) {
-          loaded = manyCourses;
-          isDemo = true;
-        }
-      } catch (err) {
+      const res = await api.get(`courses/?${params}`);
+      loaded = res.data.results || res.data;
+
+      if (!loaded || loaded.length < 10) {
         loaded = manyCourses;
         isDemo = true;
       }
-      setCourses(loaded);
-      if (isDemo && page > Math.ceil(loaded.length / 12)) {
-        setPage(1);
-      }
     } catch (err) {
-      setCourses(manyCourses);
-    } finally {
-      setLoading(false);
+      loaded = manyCourses;
+      isDemo = true;
     }
-  };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setPage(1);
+    setCourses(loaded);
+
+    if (isDemo && page > Math.ceil(loaded.length / 12)) {
+      setPage(1);
+    }
+
+  } catch (err) {
+    setCourses(manyCourses);
+  } finally {
+    setLoading(false);
+  }
+
+}, [page, ordering, search]); 
+
+
+   useEffect(() => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Попробуем загрузить с бэка, если нет — используем заглушку
     fetchCourses();
-  };
+  }, [fetchCourses]);
 
 
   // Фильтрация и пагинация курсов
