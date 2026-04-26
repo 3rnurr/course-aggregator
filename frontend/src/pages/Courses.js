@@ -56,7 +56,6 @@ function Courses() {
 
   const fetchCourses = async () => {
     setLoading(true);
-    setError("");
     try {
       const params = new URLSearchParams({
         page: page,
@@ -84,7 +83,6 @@ function Courses() {
       }
     } catch (err) {
       setCourses(manyCourses);
-      setTotalPages(Math.ceil(manyCourses.length / 12));
       setError("Ошибка при загрузке курсов, показаны демо-курсы");
     } finally {
       setLoading(false);
