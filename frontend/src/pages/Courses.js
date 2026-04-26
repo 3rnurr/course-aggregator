@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api";
 import CourseCard from "../components/CourseCard";
+import { useCallback } from "react";
 
 
 function Courses() {
@@ -11,6 +12,7 @@ function Courses() {
   const [page, setPage] = useState(1);
   const [ordering, setOrdering] = useState("-created_at");
   const [loading, setLoading] = useState(false);
+  const fetchCourses = useCallback(async () => {
   
 
 
@@ -18,7 +20,7 @@ function Courses() {
   useEffect(() => {
     // Попробуем загрузить с бэка, если нет — используем заглушку
     fetchCourses();
-  }, [page, ordering]);
+  }, [page, ordering, fetchCourses]);
 
   const manyCourses = [
     { id: 1, title: "Django Course", description: "Изучите Django с нуля", rating: 4.7, url: "https://www.djangoproject.com/", category: "Python" },
