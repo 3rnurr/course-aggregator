@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import api from "../api";
 import CourseCard from "../components/CourseCard";
 import { useEffect, useState, useCallback } from "react";
