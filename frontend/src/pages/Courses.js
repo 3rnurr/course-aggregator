@@ -12,7 +12,7 @@ function Courses() {
   const [page, setPage] = useState(1);
   const [ordering, setOrdering] = useState("-created_at");
   const [loading, setLoading] = useState(false);
-  const fetchCourses = useCallback(async () => {
+  const fetchCourses = async () => {
   
 
 
@@ -20,7 +20,7 @@ function Courses() {
   useEffect(() => {
     // Попробуем загрузить с бэка, если нет — используем заглушку
     fetchCourses();
-  }, [page, ordering, fetchCourses]);
+  }, [page, ordering,]);
 
   const manyCourses = [
     { id: 1, title: "Django Course", description: "Изучите Django с нуля", rating: 4.7, url: "https://www.djangoproject.com/", category: "Python" },
