@@ -11,45 +11,6 @@ function Courses() {
   const [page, setPage] = useState(1);
   const [ordering, setOrdering] = useState("-created_at");
   const [loading, setLoading] = useState(false);
-
-  const fetchCourses = useCallback(async () => {
-  setLoading(true);
-  try {
-    const params = new URLSearchParams({
-      page: page,
-      page_size: 12,
-      ordering: ordering,
-      search: search
-    });
-
-    let loaded;
-    let isDemo = false;
-
-    try {
-      const res = await api.get(`courses/?${params}`);
-      loaded = res.data.results || res.data;
-
-      if (!loaded || loaded.length < 10) {
-        loaded = manyCourses;
-        isDemo = true;
-      }
-    } catch (err) {
-      loaded = manyCourses;
-      isDemo = true;
-    }
-
-    setCourses(loaded);
-
-    if (isDemo && page > Math.ceil(loaded.length / 12)) {
-      setPage(1);
-    }
-
-  } catch (err) {
-    setCourses(manyCourses);
-  } finally {
-    setLoading(false);
-  }
-}, [page, ordering, search]);
   
 
 
@@ -93,7 +54,7 @@ function Courses() {
     { id: 30, title: "iOS Development", description: "Разработка под iOS", rating: 4.4, url: "https://developer.apple.com/ios/", category: "React" },
   ];
 
-  const fetchCourses = async () => {
+  const fetchCourses = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams({
