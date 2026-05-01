@@ -2,7 +2,6 @@ import api from "../api";
 import CourseCard from "../components/CourseCard";
 import { useEffect, useState, useCallback } from "react";
 
-
 function Courses() {
   const [courses, setCourses] = useState([]);
   const [search, setSearch] = useState("");
@@ -11,7 +10,14 @@ function Courses() {
   const [page, setPage] = useState(1);
   const [ordering, setOrdering] = useState("-created_at");
   const [loading, setLoading] = useState(false);
-  
+
+  // Функция-заглушка для обработки формы поиска
+  const handleSearch = (e) => {
+    if (e) e.preventDefault();
+    setPage(1); // Сбрасываем на первую страницу при поиске
+    fetchCourses();
+  };
+
   const manyCourses = [
     { id: 1, title: "Django Course", description: "Изучите Django с нуля", rating: 4.7, url: "https://www.djangoproject.com/", category: "Python" },
     { id: 2, title: "Python для начинающих", description: "Базовый курс по Python", rating: 4.5, url: "https://stepik.org/course/67", category: "Python" },
@@ -33,7 +39,6 @@ function Courses() {
     { id: 18, title: "C++ с нуля", description: "Базовый курс по C++", rating: 4.1, url: "https://stepik.org/course/7", category: "Python" },
     { id: 19, title: "Java для начинающих", description: "Основы Java", rating: 4.2, url: "https://stepik.org/course/187", category: "Python" },
     { id: 20, title: "Анализ данных в Excel", description: "Практика для аналитиков", rating: 4.0, url: "https://stepik.org/course/4852", category: "Data Science" },
-    // Новые курсы для теста пагинации
     { id: 21, title: "Go для начинающих", description: "Быстрый старт в Go", rating: 4.3, url: "https://golang.org/doc/", category: "Python" },
     { id: 22, title: "Rust: основы", description: "Безопасное программирование на Rust", rating: 4.5, url: "https://www.rust-lang.org/ru/learn", category: "Python" },
     { id: 23, title: "TypeScript", description: "Типизированный JavaScript", rating: 4.4, url: "https://www.typescriptlang.org/", category: "React" },
@@ -47,54 +52,50 @@ function Courses() {
   ];
 
   const fetchCourses = useCallback(async () => {
-  setLoading(true);
-  try {
-    const params = new URLSearchParams({
-      page: page,
-      page_size: 12,
-      ordering: ordering,
-      search: search
-    });
-
-    let loaded;
-    let isDemo = false;
-
+    setLoading(true);
     try {
-      const res = await api.get(`courses/?${params}`);
-      loaded = res.data.results || res.data;
+      const params = new URLSearchParams({
+        page: page,
+        page_size: 12,
+        ordering: ordering,
+        search: search
+      });
 
-      if (!loaded || loaded.length < 10) {
+      let loaded;
+      let isDemo = false;
+
+      try {
+        const res = await api.get(`courses/?${params}`);
+        loaded = res.data.results || res.data;
+
+        if (!loaded || loaded.length < 5) { // Уменьшил порог, если бэк пустой
+          loaded = manyCourses;
+          isDemo = true;
+        }
+      } catch (err) {
         loaded = manyCourses;
         isDemo = true;
       }
+
+      setCourses(loaded);
+
+      if (isDemo && page > Math.ceil(loaded.length / 12)) {
+        setPage(1);
+      }
+
     } catch (err) {
-      loaded = manyCourses;
-      isDemo = true;
+      setCourses(manyCourses);
+    } finally {
+      setLoading(false);
     }
-
-    setCourses(loaded);
-
-    if (isDemo && page > Math.ceil(loaded.length / 12)) {
-      setPage(1);
-    }
-
-  } catch (err) {
-    setCourses(manyCourses);
-  } finally {
-    setLoading(false);
-  }
-
-}, [page, ordering, search]); 
+  }, [page, ordering, search]); 
 
 
-   useEffect(() => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    // Попробуем загрузить с бэка, если нет — используем заглушку
+  useEffect(() => {
     fetchCourses();
   }, [fetchCourses]);
 
 
-  // Фильтрация и пагинация курсов
   const filteredAll = courses.filter(course => {
     return (
       course.title.toLowerCase().includes(search.toLowerCase()) &&
@@ -102,66 +103,60 @@ function Courses() {
       (rating === "" || course.rating >= parseFloat(rating))
     );
   });
+
   const pageSize = 12;
   const pagedCourses = filteredAll.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <div>
-      
-
       <div style={styles.container}>
-       
-
         <div style={{ marginBottom: "20px" }}>
+          <form onSubmit={handleSearch}>
+            <input
+              placeholder="Поиск курсов..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{ padding: "10px", marginRight: "10px" }}
+            />
 
-<form>
-<input
-  placeholder="Поиск курсов..."
-  value={search}
-  onChange={(e) => setSearch(e.target.value)}
-  style={{ padding: "10px", marginRight: "10px" }}
-/>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              style={{ padding: "10px", marginRight: "10px" }}
+            >
+              <option value="">Все категории</option>
+              <option value="Python">Python</option>
+              <option value="React">React</option>
+              <option value="Data Science">Data Science</option>
+            </select>
 
-<select
-  value={category}
-  onChange={(e) => setCategory(e.target.value)}
-  style={{ padding: "10px", marginRight: "10px" }}
->
-  <option value="">Все категории</option>
-  <option value="Python">Python</option>
-  <option value="React">React</option>
-  <option value="Data Science">Data Science</option>
-</select>
+            <select
+              value={rating}
+              onChange={(e) => setRating(e.target.value)}
+              style={{ padding: "10px", marginRight: "10px" }}
+            >
+              <option value="">Любой рейтинг</option>
+              <option value="4">4+</option>
+              <option value="4.5">4.5+</option>
+            </select>
 
-<select
-  value={rating}
-  onChange={(e) => setRating(e.target.value)}
-  style={{ padding: "10px", marginRight: "10px" }}
->
-  <option value="">Любой рейтинг</option>
-  <option value="4">4+</option>
-  <option value="4.5">4.5+</option>
-</select>
+            <select
+              value={ordering}
+              onChange={(e) => setOrdering(e.target.value)}
+              style={{ padding: "10px", marginRight: "10px" }}
+            >
+              <option value="-created_at">Новые</option>
+              <option value="title">По названию</option>
+              <option value="-rating">По рейтингу</option>
+            </select>
 
-<select
-  value={ordering}
-  onChange={(e) => setOrdering(e.target.value)}
-  style={{ padding: "10px", marginRight: "10px" }}
->
-  <option value="-created_at">Новые</option>
-  <option value="title">По названию</option>
-  <option value="-rating">По рейтингу</option>
-</select>
-
-<button type="submit" style={{ padding: "10px 20px", cursor: "pointer" }}>
-  Поиск
-</button>
-</form>
-
-</div>
+            <button type="submit" style={{ padding: "10px 20px", cursor: "pointer" }}>
+              Поиск
+            </button>
+          </form>
+        </div>
 
         {loading && <p>Загрузка...</p>}
-        {/* error && <p style={{ color: "red" }}>{error}</p> */}
 
         <div style={styles.grid}>
           {pagedCourses.map(course => (
@@ -169,7 +164,6 @@ function Courses() {
           ))}
         </div>
 
-        {/* Пагинация */}
         {Math.ceil(filteredAll.length / pageSize) > 1 && (
           <div style={styles.pagination}>
             <button 
@@ -196,21 +190,16 @@ function Courses() {
 
 const styles = {
   container: {
-  maxWidth: "1100px",
-  margin: "auto",
-  padding: "40px 20px"
-},
-  search: {
-    padding: 10,
-    width: 300,
-    marginBottom: 30
+    maxWidth: "1100px",
+    margin: "auto",
+    padding: "40px 20px"
   },
   grid: {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-  gap: "24px",
-  marginTop: "20px"
-},
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+    gap: "24px",
+    marginTop: "20px"
+  },
   pagination: {
     display: "flex",
     justifyContent: "center",
