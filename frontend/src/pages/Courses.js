@@ -11,7 +11,7 @@ function Courses() {
   const [ordering, setOrdering] = useState("-created_at");
   const [loading, setLoading] = useState(false);
 
-  // Функция-заглушка для обработки формы поиска
+  // Функция-заглушка для обработки формы поиска (вот она спасет нас от ошибки!)
   const handleSearch = (e) => {
     if (e) e.preventDefault();
     setPage(1); // Сбрасываем на первую страницу при поиске
@@ -68,7 +68,7 @@ function Courses() {
         const res = await api.get(`courses/?${params}`);
         loaded = res.data.results || res.data;
 
-        if (!loaded || loaded.length < 5) { // Уменьшил порог, если бэк пустой
+        if (!loaded || loaded.length < 5) { 
           loaded = manyCourses;
           isDemo = true;
         }
