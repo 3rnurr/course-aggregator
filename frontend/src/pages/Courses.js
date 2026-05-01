@@ -114,7 +114,7 @@ function Courses() {
 
         <div style={{ marginBottom: "20px" }}>
 
-<form onSubmit={handleSearch}>
+<form>
 <input
   placeholder="Поиск курсов..."
   value={search}
